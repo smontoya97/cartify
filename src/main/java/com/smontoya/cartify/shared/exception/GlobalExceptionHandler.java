@@ -9,8 +9,9 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import com.smontoya.cartify.customer.domain.exception.CustomerNotFoundException;
 import com.smontoya.cartify.customer.domain.exception.DomainException;
 import com.smontoya.cartify.customer.infrastructure.exception.DuplicateEmailException;
 
@@ -19,6 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> customerNotFoundException(CustomerNotFoundException ex) {
+        log.warn("Customer not found: {}", ex.getMessage());
+        return response(
+                HttpStatus.NOT_FOUND,
+                ex.getClass().getSimpleName(),
+                ex.getMessage());
+    }
 
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<ApiErrorResponse> domainException(DomainException ex) {
@@ -38,10 +48,9 @@ public class GlobalExceptionHandler {
                 ex.getMessage());
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<ApiErrorResponse> resourceNotFound(NoHandlerFoundException ex) {
-        log.warn("Resource not found: {} {}", ex.getHttpMethod(), ex.getRequestURL());
-
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiErrorResponse> resourceNotFound(NoResourceFoundException ex) {
+        log.warn("Resource not found: {} {}", ex.getHttpMethod(), ex.getMessage());
         return response(
                 HttpStatus.NOT_FOUND,
                 "ResourceNotFound",
@@ -50,9 +59,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ApiErrorResponse> methodNotAllowed(HttpRequestMethodNotSupportedException ex) {
-
         log.warn("HTTP method not supported: {} {}", ex.getMethod(), ex.getSupportedHttpMethods());
-
         return response(
                 HttpStatus.METHOD_NOT_ALLOWED,
                 "MethodNotAllowed",
@@ -61,9 +68,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiErrorResponse> malformedJson(HttpMessageNotReadableException ex) {
-
         log.warn("Malformed or unreadable JSON request");
-
         return response(
                 HttpStatus.BAD_REQUEST,
                 "MalformedJson",
@@ -72,7 +77,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> validationError(MethodArgumentNotValidException ex) {
-
         List<String> details = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
