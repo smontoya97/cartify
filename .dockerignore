@@ -1,0 +1,35 @@
+# Version control
+.git
+.gitignore
+
+# Build outputs (rebuilt inside the container, no need to send them in the context)
+build/
+out/
+.gradle/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Local environment / secrets
+.env
+.env.*
+
+# Docker-related files (not needed inside the image itself)
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Local tooling not needed at runtime
+scripts/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+
+# Documentation (not needed in the image)
+README.md
+docs/
