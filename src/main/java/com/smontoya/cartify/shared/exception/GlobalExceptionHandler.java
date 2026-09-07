@@ -9,6 +9,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.smontoya.cartify.customer.domain.exception.CustomerNotFoundException;
@@ -55,6 +56,16 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND,
                 "ResourceNotFound",
                 "The requested resource was not found");
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiErrorResponse> methodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        log.warn("Ivalid value '{}' for parameter '{}'. Expected type: {}", ex.getValue(), ex.getName(),
+                ex.getRequiredType());
+        return response(
+                HttpStatus.BAD_REQUEST,
+                "InvalidParameter",
+                "Invalid value '" + ex.getValue() + "' for parameter '" + ex.getName() + "'");
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
