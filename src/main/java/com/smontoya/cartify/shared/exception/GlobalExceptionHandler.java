@@ -14,7 +14,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.smontoya.cartify.customer.domain.exception.CustomerNotFoundException;
 import com.smontoya.cartify.customer.domain.exception.DomainException;
-import com.smontoya.cartify.customer.infrastructure.exception.DuplicateEmailException;
+import com.smontoya.cartify.customer.domain.exception.DuplicateEmailException;
 
 import lombok.extern.slf4j.Slf4j;
 

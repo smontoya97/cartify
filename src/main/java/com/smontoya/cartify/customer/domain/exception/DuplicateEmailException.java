@@ -1,4 +1,4 @@
-package com.smontoya.cartify.customer.infrastructure.exception;
+package com.smontoya.cartify.customer.domain.exception;
 
 public class DuplicateEmailException extends RuntimeException {
 

@@ -13,4 +13,6 @@ public interface CustomerRepositoryPort {
     Optional<Customer> findById(CustomerId id);
 
     Optional<Customer> findByEmail(Email email);
+
+    void update(Customer customer);
 }
